@@ -1,6 +1,7 @@
 from flask_socketio import SocketIO
 import serial
 import time
+import threading
 
 # Initialize serial connection to Arduino
 arduino = serial.Serial('/dev/ttyUSB0', 9600)  # Update with your Arduino port
@@ -35,3 +36,21 @@ class ArduinoController:
         
         # Call the send_to_arduino method to send the message
         return ArduinoController.send_to_arduino(message)
+    
+    @staticmethod
+    def read_from_arduino():
+        """
+        Background thread to read data from Arduino and send it to connected clients.
+        """
+        while True:
+            try:
+                # Read data from the Arduino
+                data = arduino.readline().decode('utf-8').strip()
+                if data:  # If valid data is received
+                    print(f"Data received from Arduino: {data}")
+                    # Emit the data to connected clients via Socket.IO
+                    socketio.emit('arduino_data', {'data': data})
+                    return data
+            except Exception as e:
+                print(f"Error reading from Arduino: {e}")  
+                return {}

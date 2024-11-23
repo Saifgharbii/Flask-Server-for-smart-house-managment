@@ -42,6 +42,11 @@ class CleaningRobot(Device):
     coverage_area: Optional[float] = None  # in square meters
 
 @dataclass
+class  FireDetector(Device) :
+    status : bool = False
+    id_room : str = "" 
+
+@dataclass
 class Battery(FirebaseModel):
     capacity: float = 0.0  # in kWh
     current_charge: float = 0.0  # in kWh
@@ -52,6 +57,8 @@ class Battery(FirebaseModel):
     house_id: str = ""  # Reference to House
     charging_history: List[Dict] = field(default_factory=list)
     discharge_rate: Optional[float] = None  # kWh per hour
+ 
+
     
 @dataclass
 class SolarPanel(FirebaseModel):

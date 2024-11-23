@@ -5,7 +5,7 @@ from .base import (
     DeviceStatus,
     EnergyTransactionType
 )
-from .device import Device, Light, Window, Door, CleaningRobot, Battery
+from .device import Device, Light, Window, Door, CleaningRobot, FireDetector, Battery
 from .room import Room, Garage, Bathroom, Kitchen, Toilet
 from .user import User, House, Notification, EnergyTransaction
 
@@ -20,6 +20,7 @@ __all__ = [
     'Window',
     'Door',
     'CleaningRobot',
+    'FireDetector'
     'Battery',
     'Room',
     'Garage',
