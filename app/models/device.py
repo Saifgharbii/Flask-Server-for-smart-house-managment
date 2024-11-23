@@ -56,7 +56,7 @@ class Battery(FirebaseModel):
 class SolarPanel(FirebaseModel):
     panel_model: str = ""
     manufacturer: str = ""
-    rated_power: float = 0.0  # in watts
+    rated_power: float = 0.0  # in watts puissance 
     efficiency: float = 0.0  # percentage (e.g., 20.5 for 20.5%)
     area: float = 0.0  # in square meters
     orientation: str = "south"  # north, south, east, west
