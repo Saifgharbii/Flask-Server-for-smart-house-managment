@@ -9,6 +9,7 @@ class Device(FirebaseModel):
     device_type: DeviceType = DeviceType.LIGHT
     status: DeviceStatus = DeviceStatus.INACTIVE
     room_id: str = ""  # Reference to Room
+    room_name : str="" # Reference to the name of the room
     power_consumption: Optional[float] = None  # in watts
     last_maintenance: Optional[datetime] = None
     installation_date: datetime = field(default_factory=datetime.utcnow)
