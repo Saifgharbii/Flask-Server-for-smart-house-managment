@@ -1,16 +1,25 @@
 from flask_socketio import SocketIO
 import serial
 import time
-import threading
-
+from contextlib import contextmanager
 # Initialize serial connection to Arduino
-arduino = serial.Serial('/dev/ttyUSB0', 9600)  # Update with your Arduino port
+
+arduino = serial.Serial(
+            port="COM5",
+            baudrate=9600,
+            timeout=0.05,
+            write_timeout=1
+        )
+
+print(arduino.is_open)
+
 time.sleep(2)  # Wait for the connection to stabilize
 
-# Socket.IO instance (shared with Flask app)
-socketio = SocketIO()
+
+
 
 class ArduinoController:
+
     @staticmethod
     def send_to_arduino(message):
         """
@@ -47,9 +56,9 @@ class ArduinoController:
                 # Read data from the Arduino
                 data = arduino.readline().decode('utf-8').strip()
                 if data:  # If valid data is received
-                    print(f"Data received from Arduino: {data}")
+                    #print(f"Data received from Arduino: {data}")
                     # Emit the data to connected clients via Socket.IO
-                    socketio.emit('arduino_data', {'data': data})
+                    #socketio.emit('arduino_data', {'data': data})
                     return data
             except Exception as e:
                 print(f"Error reading from Arduino: {e}")  

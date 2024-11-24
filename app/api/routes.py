@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from ..controller import device_controller
+from ..controller import device_controller,arduino_controler
 from ..models import Light, Door, AC_Fan, FireDetector
 from flask import Blueprint
 
