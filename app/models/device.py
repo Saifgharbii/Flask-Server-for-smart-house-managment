@@ -44,7 +44,12 @@ class CleaningRobot(Device):
 @dataclass
 class  FireDetector(Device) :
     status : bool = False
-    id_room : str = "" 
+
+
+@dataclass
+class AC_Fan(Device) :
+    temperature : float = 26.0 
+
 
 @dataclass
 class Battery(FirebaseModel):

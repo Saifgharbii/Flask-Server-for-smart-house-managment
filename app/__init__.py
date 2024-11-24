@@ -1,30 +1,20 @@
 from flask import Flask
+from flask_socketio import SocketIO
 from flask_cors import CORS
-from .config import config_by_name
-from .db_init import init_firebase
+from config import Config
 
-def create_app(config_name: str = 'development') -> Flask:
-    """Create and configure the Flask application"""
+socketio = SocketIO()
+
+def create_app(config_class=Config):
     app = Flask(__name__)
+    app.config.from_object(config_class)
     
-    # Load config based on environment
-    app.config.from_object(config_by_name[config_name])
-    
-    # Initialize CORS
+    # Initialize extensions
     CORS(app)
+    socketio.init_app(app, cors_allowed_origins="*")
     
-    # Initialize Firebase
-    init_firebase(app)
-    
-    # Register blueprints here
-    from .controllers.user_controller import user_bp
-    from .controllers.device_controller import device_bp
-    from .controllers.room_controller import room_bp
-    from .controllers.house_controller import house_bp
-    
-    app.register_blueprint(user_bp, url_prefix='/api/users')
-    app.register_blueprint(device_bp, url_prefix='/api/devices')
-    app.register_blueprint(room_bp, url_prefix='/api/rooms')
-    app.register_blueprint(house_bp, url_prefix='/api/houses')
+    # Register blueprints
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix='/api')
     
     return app
