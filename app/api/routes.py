@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app.api import bp
-from app.controllers import DevicesController
+from app.controller import device_controller
 from app.models import Light, Door, AC_Fan, FireDetector
 
 @bp.route('/devices/<room_id>/lights', methods=['POST'])
@@ -10,12 +10,12 @@ def control_light(room_id):
     light = Light(room_id=room_id)
     
     if action == 'on':
-        result = DevicesController.LampController.lamp_on(light)
+        result = device_controller.LampController.lamp_on(light)
     elif action == 'off':
-        result = DevicesController.LampController.lamp_off(light)
+        result = device_controller.LampController.lamp_off(light)
     elif action == 'schedule':
         duration = data.get('duration')
-        result = DevicesController.LampController.lamp_schedule(light, duration)
+        result = device_controller.LampController.lamp_schedule(light, duration)
     else:
         return jsonify({'error': 'Invalid action'}), 400
         
@@ -28,9 +28,9 @@ def control_door(room_id):
     door = Door(room_id=room_id)
     
     if action == 'open':
-        result = DevicesController.DoorController.open_door(door)
+        result = device_controller.DoorController.open_door(door)
     elif action == 'close':
-        result = DevicesController.DoorController.close_door(door)
+        result = device_controller.DoorController.close_door(door)
     else:
         return jsonify({'error': 'Invalid action'}), 400
         
@@ -43,9 +43,9 @@ def control_ac(room_id):
     ac = AC_Fan(room_id=room_id)
     
     if action == 'activate':
-        result = DevicesController.AC_Fan.activate_ac_fan(ac)
+        result = device_controller.AC_Fan.activate_ac_fan(ac)
     elif action == 'deactivate':
-        result = DevicesController.AC_Fan.desactivate_ac_fan(ac)
+        result = device_controller.AC_Fan.desactivate_ac_fan(ac)
     else:
         return jsonify({'error': 'Invalid action'}), 400
         
