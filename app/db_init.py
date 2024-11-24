@@ -5,7 +5,7 @@ import os
 
 def init_firebase(app: Flask) -> None:
     """Initialize Firebase Admin SDK"""
-    cred_path = app.config.get('FIREBASE_CREDENTIALS_PATH')
+    cred_path = 'credentials.json'
     
     if not firebase_admin._apps:
         try:
