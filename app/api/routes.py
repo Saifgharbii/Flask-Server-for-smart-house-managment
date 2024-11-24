@@ -1,8 +1,9 @@
 from flask import jsonify, request
-from app.api import bp
-from app.controller import device_controller
-from app.models import Light, Door, AC_Fan, FireDetector
+from ..controller import device_controller
+from ..models import Light, Door, AC_Fan, FireDetector
+from flask import Blueprint
 
+bp = Blueprint('api', __name__)
 @bp.route('/devices/<room_id>/lights', methods=['POST'])
 def control_light(room_id):
     data = request.get_json()

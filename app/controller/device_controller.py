@@ -1,7 +1,7 @@
 
 from typing import Dict, Any
 from ..models import device, FirebaseManager , Light, Window, Door, CleaningRobot, Battery, FireDetector,AC_Fan
-from arduino_controler import ArduinoController
+from .arduino_controler import ArduinoController
 
 firebase_manager = FirebaseManager()
 
