@@ -8,14 +8,20 @@
         "fire_detected": false,
         "devices": {
           "light1": {
-            "status": "ACTIVE",
-            "power_consumption": 9.5,
-            "brightness_level": 75
+            "status" : "ACTIVE",
+            "temporsation" : "ACTIVE",
+            "temporsation_duration_left" : 30
           },
           "fire_detector1": {
-            "status": "ACTIVE",
-            "is_alarming": false,
-            "last_check": "2024-11-24T10:30:00Z"
+            "is_alarming": false
+          },
+          "door":{
+            "status": "OPEN"
+          },
+          "AC" : {            
+            "status" : "ACTIVE",
+            "temporsation" : "ACTIVE",
+            "temporsation_duration_left" : 30
           }
         }
       },
@@ -38,25 +44,16 @@
         }
       }
     },
-    "alert_status": {
-      "fire_alert": false,
-      "rooms_with_fire": []
-    },
     "solar_system": {
       "solar1": {
-        "current_power_output": 280.5,
-        "temperature": 42.5,
-        "voltage": 24.5,
-        "current": 11.45
+        "voltage": 24.5
       },
       "battery1": {
-        "current_charge": 10.2,
-        "charging_status": "CHARGING",
-        "current_power_input": 280.5,
-        "voltage": 48.2,
-        "temperature": 28.5
+        "current_charge_per_cent": 80,
+        "charging_status": "CHARGING"
       }
     },
     "total_power_consumption": 567.8,
-    "grid_power_usage": 287.3
+    "grid_power_usage": 287.3,
+    "V2H_battery" : 140
   }
