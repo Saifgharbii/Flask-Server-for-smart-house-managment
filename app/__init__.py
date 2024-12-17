@@ -70,7 +70,6 @@ def create_app(config_class=Config):
     # Initialize extensions
     CORS(app)
     socketio.init_app(app, cors_allowed_origins="*")
-    print("socket intialized")
     
     # Register blueprints
     from .api.routes import bp as api_bp
