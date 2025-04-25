@@ -1,156 +1,145 @@
-# System Architecture Documentation
+# API Endpoints Documentation
 
-## High-Level Overview
+## 1. API Structure Overview
+
 ```mermaid
 graph TD
-    A[Web/Mobile Client] --> B[Flask API Server]
-    B --> C{Controllers}
-    C --> D[Firebase Firestore]
-    C --> E[Arduino Hardware]
-    C --> F[GHI AI Model]
-    D --> G[(Real-time Database)]
-    E --> H[Physical Devices]
-    F --> I[Energy Management]
+    API -->|"`/devices/{room}/lights`"| Lights
+    API -->|"`/devices/{room}/doors`"| Doors
+    API -->|"`/devices/{room}/ac`"| AC_Fan
+    Lights -->|POST actions| LampController
+    Doors -->|POST actions| DoorController
+    AC_Fan -->|POST actions| ACController
 ```
 
-## 1. Component Architecture
+## 2. Endpoint Reference
 
-### 1.1 Presentation Layer
-```mermaid
-flowchart LR
-    Web[Web Client] --> API
-    Mobile[Mobile App] --> API
-    API[Flask API] -->|WebSocket| RealTime[Real-time Updates]
-    style Web fill:#f9f,stroke:#333
-    style Mobile fill:#9f9,stroke:#333
+### Base URL: `/api/v1`
+
+### Lights Control (`/devices/<room_id>/lights`)
+**Method:** POST  
+**Actions:** 
+- `on`: Turn on lights
+- `off`: Turn off lights
+- `schedule`: Schedule light operation
+
+**Request Body:**
+```json
+{
+    "action": "on|off|schedule",
+    "duration": 60  // Required for schedule action
+}
 ```
 
-- **Web Client**: React-based dashboard
-- **Mobile App**: Native iOS/Android applications
-- **WebSocket**: Bi-directional communication channel
+**Responses:**
+| Status | Success Response | Error Response |
+|--------|-------------------|----------------|
+| 200 OK | `{"status": "success", ...}` | `{"error": "Invalid action"}` |
+| 400 Bad Request | - | `{"error": "Missing duration"}` |
 
-### 1.2 Application Layer
-```mermaid
-classDiagram
-    class FlaskApp {
-        +APIRoutes
-        +WebSocketHandlers
-        +Configuration
-        +FirebaseAdapter
-    }
-    
-    class Controllers {
-        +DeviceController
-        +EnergyController
-        +ArduinoManager
-        +AIModel
-    }
-    
-    FlaskApp --> Controllers : Uses
+---
+
+### Doors Control (`/devices/<room_id>/doors`)
+**Method:** POST  
+**Actions:** 
+- `open`: Open door
+- `close`: Close door
+
+**Request Body:**
+```json
+{
+    "action": "open|close"
+}
 ```
 
-### 1.3 Data Layer
-```mermaid
-erDiagram
-    HOUSE ||--o{ ROOM : contains
-    ROOM ||--o{ DEVICE : has
-    USER ||--o{ HOUSE : owns
-    ENERGY ||--o{ TRANSACTION : records
-    
-    HOUSE {
-        string id PK
-        string address
-        float solar_capacity
-    }
-    
-    DEVICE {
-        string id PK
-        string type
-        string status
-    }
+**Responses:**
+| Status | Success Response | Error Response |
+|--------|-------------------|----------------|
+| 200 OK | `{"status": "success", ...}` | `{"error": "Invalid action"}` |
+| 400 Bad Request | - | `{"error": "Missing action"}` |
+
+---
+
+### AC/Fan Control (`/devices/<room_id>/ac`)
+**Method:** POST  
+**Actions:** 
+- `activate`: Turn on AC
+- `deactivate`: Turn off AC
+
+**Request Body:**
+```json
+{
+    "action": "activate|deactivate"
+}
 ```
 
-## 2 Development Setup
+**Responses:**
+| Status | Success Response | Error Response |
+|--------|-------------------|----------------|
+| 200 OK | `{"status": "success", ...}` | `{"error": "Invalid action"}` |
+| 400 Bad Request | - | `{"error": "Invalid parameters"}` |
 
-```mermaid
-graph LR
-    DevClient --> Flask
-    Flask --> FirebaseEmulator[(Firebase Emulator)]
-    Flask --> Arduino[Local Arduino]
-```
+---
 
-## 3. Core Flows
+## 3. Request Flow
 
-### 3.1 Device Control Flow
-```mermaid
-sequenceDiagram
-    Client->>+API: POST /devices/{room}/lights
-    API->>Controller: Validate request
-    Controller->>Arduino: Send serial command
-    Arduino->>Controller: Return ACK
-    Controller->>Firebase: Update device status
-    Firebase-->>Client: Real-time update
-    API-->>Client: HTTP 200 response
-```
-
-### 3.2 Energy Management Flow
 ```mermaid
 sequenceDiagram
-    Arduino->>Server: Sensor data (every 5s)
-    Server->>Firebase: Store raw data
-    Firebase->>EnergyController: Trigger analysis
-    EnergyController->>AIModel: Get forecast
-    AIModel-->>EnergyController: 7-day prediction
-    EnergyController->>Firebase: Update strategy
-    EnergyController->>Arduino: Send adjustments
+    participant Client
+    participant API
+    participant DeviceController
+    participant Arduino
+    
+    Client->>API: POST /devices/living_room/lights
+    API->>DeviceController: Validate & process request
+    DeviceController->>Arduino: Send serial command
+    Arduino->>DeviceController: Return status
+    DeviceController->>API: Format response
+    API->>Client: JSON response
 ```
 
-## 4. Key Architectural Decisions
+## 4. Error Handling
 
-1. **Real-time First Design**
-   - WebSocket for instant updates
-   - Firebase listener for DB changes
-   - 5-second sensor polling cycle
+**Common Error Codes:**
+| Code | Meaning | Resolution |
+|------|---------|-------------|
+| 400 | Bad Request | Check request parameters |
+| 404 | Not Found | Verify endpoint URL |
+| 405 | Method Not Allowed | Use POST method |
+| 500 | Internal Error | Check server logs |
 
-2. **Modular Controller System**
-   ```python
-   class DeviceController(ABC):
-       @abstractmethod
-       def handle_command(self, command): pass
-   
-   class LightController(DeviceController):
-       def handle_command(self, cmd):
-           # Implementation specific to lights
-   ```
+**Error Response Format:**
+```json
+{
+    "error": "Descriptive message",
+    "details": "Technical details (optional)",
+    "code": 400
+}
+```
 
-3. **AI/ML Integration**
-   - LSTM model for solar predictions
-   - Separate model-serving thread
-   - Daily retraining pipeline
+---
 
-4. **Security Layers**
-   ```mermaid
-   graph TD
-       Request --> Auth[OAuth2 Authentication]
-       Auth --> RateLimit[Rate Limiting]
-       RateLimit --> Validation[Input Validation]
-       Validation --> Controller
-   ```
+## 5. Example Usage
 
-## 5. Scalability Considerations
+**Turn on Living Room Lights:**
+```bash
+curl -X POST http://localhost:5000/api/v1/devices/living_room/lights \
+     -H "Content-Type: application/json" \
+     -d '{"action": "on"}'
+```
 
-| Component        | Scaling Strategy                | Tools/Techniques               |
-|------------------|---------------------------------|--------------------------------|
-| API Server       | Horizontal scaling              | Kubernetes, Gunicorn workers   |
-| Database         | Sharding                        | Firebase regional deployments  |
-| AI Model         | Batch processing                | TF Serving, GPU acceleration   |
-| Arduino Network  | Edge computing                  | MQTT message broker            |
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "Lamp in room living_room turned on."
+}
+```
 
-## 6. Technology Stack
+**Schedule Bedroom Lights:**
+```bash
+curl -X POST http://localhost:5000/api/v1/devices/bedroom/lights \
+     -H "Content-Type: application/json" \
+     -d '{"action": "schedule", "duration": 120}'
+```
 
-| Layer            | Technologies                    |
-|------------------|---------------------------------|
-| Frontend         | React, Flutter, WebSocket       |
-| Backend          | Flask, Firebase, Socket.IO      |
-| Hardware         | Arduino UNO, ESP32 sensors      |
-| AI/ML            | TensorFlow, Keras, Pandas       |
