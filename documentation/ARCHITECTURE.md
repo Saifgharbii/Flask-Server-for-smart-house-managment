@@ -21,8 +21,6 @@ flowchart LR
     Web[Web Client] --> API
     Mobile[Mobile App] --> API
     API[Flask API] -->|WebSocket| RealTime[Real-time Updates]
-    style Web fill:#f9f,stroke:#333
-    style Mobile fill:#9f9,stroke:#333
 ```
 
 - **Web Client**: React-based dashboard
