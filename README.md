@@ -121,7 +121,6 @@ socket.on('arduino_data', (data) => {
 - [API Reference](./documentation/API.md)
 - [System Architecture](./documentation/ARCHITECTURE.md)
 - [Data Models](./documentation/DATA_MODELS.md)
-- [AI Model Training](./documentation/MODEL_TRAINING.md)
 
 ## Contributing
 
