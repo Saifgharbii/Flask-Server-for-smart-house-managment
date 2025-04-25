@@ -5,7 +5,7 @@
 [![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=white)](https://firebase.google.com)
 [![Flask](https://img.shields.io/badge/Flask-2.0%2B-lightgrey?logo=flask)](https://flask.palletsprojects.com/)
 
-A comprehensive IoT solution for smart home energy management featuring real-time device control, energy optimization, and solar forecasting using LSTM AI models.
+A comprehensive IoT solution for smart home energy management featuring real-time device control, energy optimization, and solar forecasting using LSTM AI model.
 
 ## Key Features
 
