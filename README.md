@@ -131,4 +131,3 @@ socket.on('arduino_data', (data) => {
 4. Push to branch (`git push origin feature/improvement`)
 5. Open Pull Request
 
-```
