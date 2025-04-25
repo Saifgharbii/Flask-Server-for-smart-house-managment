@@ -143,6 +143,3 @@ curl -X POST http://localhost:5000/api/v1/devices/bedroom/lights \
      -d '{"action": "schedule", "duration": 120}'
 ```
 
----
-
-This completes the API documentation section. Would you like me to integrate it with the previous documentation or make any specific modifications?
